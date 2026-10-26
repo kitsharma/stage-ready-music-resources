@@ -85,7 +85,11 @@ function readStoredIds() {
 }
 
 function persistSetList() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.savedIds]));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.savedIds]));
+  } catch (error) {
+    console.warn("Set List could not be saved on this device.", error);
+  }
 }
 
 function getFilteredResources() {
@@ -147,6 +151,7 @@ function createResourceCard(resource) {
   });
   card.querySelector(".details-button").addEventListener("click", () => openDetails(resource.id));
   const saveButton = card.querySelector(".save-button");
+  saveButton.dataset.resourceId = resource.id;
   setSaveButtonState(saveButton, resource.id);
   saveButton.addEventListener("click", () => toggleSaved(resource.id));
   return card;
@@ -262,7 +267,7 @@ function toggleSaved(id) {
   const adding = !state.savedIds.has(id);
   adding ? state.savedIds.add(id) : state.savedIds.delete(id);
   persistSetList();
-  renderResources();
+  document.querySelectorAll(`.save-button[data-resource-id="${CSS.escape(id)}"]`).forEach(button => setSaveButtonState(button, id));
   renderSetList();
   showToast(`${resource.title} ${adding ? "added to" : "removed from"} your Set List.`);
 }

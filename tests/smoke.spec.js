@@ -13,12 +13,18 @@ test("filters, saves, opens details, and changes view", async ({ page }) => {
   await page.locator("button[data-filter=rhythm]").click();
   await expect(page.locator(".resource-card").first()).toBeVisible();
 
-  await page.locator(".save-button").first().click();
+  const firstSaveButton = page.locator(".save-button").first();
+  await firstSaveButton.focus();
+  await page.keyboard.press("Enter");
   await expect(page.locator("#set-list-count")).toHaveText("1");
+  await expect(firstSaveButton).toBeFocused();
 
-  await page.locator(".details-button").first().click();
+  const firstDetailsButton = page.locator(".details-button").first();
+  await firstDetailsButton.click();
   await expect(page.locator("#detail-dialog")).toBeVisible();
+  await page.locator("#detail-save").click();
   await page.locator("#close-detail").click();
+  await expect(firstDetailsButton).toBeFocused();
 
   await page.locator("button[data-view=hall]").click();
   await expect(page.locator("#hall-view")).toBeVisible();
@@ -34,4 +40,14 @@ test("filters, saves, opens details, and changes view", async ({ page }) => {
   await page.locator("#studio-view [data-zone=artistic]").click();
   await expect(page.locator("#studio-view [data-immersive-results]")).toBeVisible();
   expect(pageErrors).toEqual([]);
+});
+
+test("resources remain usable when browser storage is unavailable", async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => { throw new DOMException("Storage disabled", "SecurityError"); };
+  });
+  await page.goto("/");
+  await expect(page.locator(".resource-card")).toHaveCount(19);
+  await page.locator(".save-button").first().click();
+  await expect(page.locator("#set-list-count")).toHaveText("1");
 });
