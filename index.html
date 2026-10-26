@@ -1,279 +1,124 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121316">
+  <meta name="description" content="A searchable, classroom-ready guide to free elementary music lessons from trusted cultural and educational organizations.">
   <title>Stage Ready · Elementary Music Resource Guide</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Material+Symbols+Outlined" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: '#ffc665',
-            'primary-container': '#e5a93c',
-            surface: '#121316',
-            'surface-container': '#1f1f23',
-            'surface-container-low': '#1b1b1f',
-            'on-surface': '#e3e2e6',
-            secondary: '#89d3d1'
-          },
-          fontFamily: { sans: ['Atkinson Hyperlegible Next', 'system-ui', 'sans-serif'] }
-        }
-      }
-    }
-  </script>
-  <style>
-    .zone { transition: all 0.2s; cursor: pointer; }
-    .zone:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,198,101,0.15); }
-    .card { transition: transform 0.15s; }
-    .card:hover { transform: translateY(-2px); }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
-<body class="bg-surface text-on-surface font-sans min-h-screen">
-
-  <header class="sticky top-0 z-40 bg-surface/90 backdrop-blur border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-      <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined text-primary text-3xl">theater_comedy</span>
-        <div>
-          <div class="font-bold text-lg leading-none">Stage Ready</div>
-          <div class="text-xs text-outline tracking-wider">ELEMENTARY MUSIC RESOURCE GUIDE</div>
-        </div>
-      </div>
-
-      <div class="flex bg-surface-container-low p-1 rounded-full">
-        <button onclick="setView('cards')" id="btn-cards" class="px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-black">Cards</button>
-        <button onclick="setView('hall')" id="btn-hall" class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface">Concert Hall</button>
-        <button onclick="setView('studio')" id="btn-studio" class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface">Recording Studio</button>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <input id="search" type="text" placeholder="Search lessons..." class="bg-surface-container-low rounded-full px-4 py-1.5 text-sm w-48 focus:outline-none focus:ring-1 focus:ring-primary" oninput="updateViews()">
-        <button onclick="toggleSetList()" class="relative flex items-center gap-2 bg-primary text-black px-4 py-1.5 rounded-full font-semibold text-sm">
-          <span class="material-symbols-outlined text-base">queue_music</span>
-          Set List
-          <span id="setlist-count" class="bg-black/20 px-1.5 rounded-full text-xs">0</span>
-        </button>
-      </div>
+<body>
+  <a class="skip-link" href="#resources">Skip to resources</a>
+  <header class="site-header">
+    <div class="header-row shell">
+      <a class="brand" href="./" aria-label="Stage Ready home">
+        <span class="brand-mark" aria-hidden="true">♪</span>
+        <span><strong>Stage Ready</strong><small>Elementary music resource guide</small></span>
+      </a>
+      <nav class="view-switcher" aria-label="Choose a view">
+        <button class="view-button is-active" type="button" data-view="cards" aria-pressed="true">Cards</button>
+        <button class="view-button" type="button" data-view="hall" aria-pressed="false">Concert Hall</button>
+        <button class="view-button" type="button" data-view="studio" aria-pressed="false">Studio</button>
+      </nav>
+      <button class="set-list-button" id="open-set-list" type="button" aria-controls="set-list-panel" aria-expanded="false">
+        <span aria-hidden="true">♫</span> Set List <span class="count" id="set-list-count">0</span>
+      </button>
     </div>
-
-    <div class="max-w-7xl mx-auto px-4 pb-3 flex flex-wrap gap-2 text-xs">
-      <span class="text-outline">FILTERS:</span>
-      <button onclick="toggleFilter('k2')" class="filter-btn px-3 py-1 rounded-full bg-surface-container" data-filter="k2">Grade K–2</button>
-      <button onclick="toggleFilter('35')" class="filter-btn px-3 py-1 rounded-full bg-surface-container" data-filter="35">Grade 3–5</button>
-      <button onclick="toggleFilter('rhythm')" class="filter-btn px-3 py-1 rounded-full bg-surface-container" data-filter="rhythm">Rhythm</button>
-      <button onclick="toggleFilter('melody')" class="filter-btn px-3 py-1 rounded-full bg-surface-container" data-filter="melody">Melody</button>
-      <button onclick="toggleFilter('hands')" class="filter-btn px-3 py-1 rounded-full bg-surface-container" data-filter="hands">Hands-on</button>
-      <button onclick="toggleFilter('cultural')" class="filter-btn px-3 py-1 rounded-full bg-surface-container" data-filter="cultural">Cultural</button>
+    <div class="search-row shell">
+      <label class="search-field" for="search">
+        <span class="visually-hidden">Search resources</span><span aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="Search lessons, skills, sources…" autocomplete="off"><kbd>/</kbd>
+      </label>
+      <button class="filter-toggle" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filters">Filters</button>
+      <div class="result-summary" id="result-summary" aria-live="polite">Loading resources…</div>
+    </div>
+    <div class="filters shell" id="filters" aria-label="Filter resources">
+      <div class="filter-group" aria-label="Grade band">
+        <span>Grade</span>
+        <button type="button" data-filter="k2" aria-pressed="false">K–2</button>
+        <button type="button" data-filter="35" aria-pressed="false">3–5</button>
+      </div>
+      <div class="filter-group" aria-label="Music concepts">
+        <span>Focus</span>
+        <button type="button" data-filter="rhythm" aria-pressed="false">Rhythm</button>
+        <button type="button" data-filter="melody" aria-pressed="false">Melody</button>
+        <button type="button" data-filter="hands-on" aria-pressed="false">Hands-on</button>
+        <button type="button" data-filter="culture" aria-pressed="false">Culture</button>
+      </div>
+      <button class="clear-filters" id="clear-filters" type="button">Clear filters</button>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
-    <!-- Cards View -->
-    <div id="view-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-
-    <!-- Concert Hall View -->
-    <div id="view-hall" class="hidden">
-      <div class="relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#0a0a0d] via-[#121316] to-[#1c140a] min-h-[480px] border border-white/5 mb-6">
-        <div class="absolute inset-0 opacity-25 bg-[url('https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&w=1600')] bg-cover bg-center"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-surface/60"></div>
-        <div class="relative p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="zone bg-surface-container/80 backdrop-blur p-4 rounded-xl" onclick="filterByZone('artistic')">
-            <div class="text-primary text-xs font-bold uppercase">Stage Left</div>
-            <div class="font-bold">Artistic Processes</div>
-            <div class="text-xs text-outline mt-1">Creating · Performing · Responding · Connecting</div>
-          </div>
-          <div class="zone bg-primary/10 backdrop-blur p-4 rounded-xl border border-primary/30 text-center" onclick="filterByZone('knowledge')">
-            <div class="text-primary text-xs font-bold uppercase">Center Stage</div>
-            <div class="font-bold text-lg">Musical Knowledge</div>
-            <div class="text-xs mt-1">Rhythm · Melody · Form · Expression</div>
-          </div>
-          <div class="zone bg-surface-container/80 backdrop-blur p-4 rounded-xl text-right" onclick="filterByZone('repertoire')">
-            <div class="text-primary text-xs font-bold uppercase">Stage Right</div>
-            <div class="font-bold">Repertoire & Culture</div>
-            <div class="text-xs text-outline mt-1">Folkways · Kodály · Global Songs</div>
-          </div>
-          <div class="md:col-span-3 zone bg-surface-container-low/80 backdrop-blur p-4 rounded-xl text-center" onclick="filterByZone('musicianship')">
-            <div class="text-secondary text-xs font-bold uppercase">Orchestra Pit</div>
-            <div class="font-bold">Musicianship · Singing · Playing · Moving · Improvising</div>
-          </div>
+  <main id="resources">
+    <section class="intro shell" aria-labelledby="page-title">
+      <p class="eyebrow">Free · classroom-ready · source-linked</p>
+      <h1 id="page-title">Find the next thing your students will <em>make.</em></h1>
+      <p>Browse adaptable elementary music lessons from trusted education and cultural organizations. Save the strongest ideas to a Set List for your next class.</p>
+    </section>
+    <section class="view shell" id="cards-view" data-view-panel="cards" aria-label="Resource cards">
+      <div class="resource-grid" data-resource-list></div>
+    </section>
+    <section class="view shell is-hidden" id="hall-view" data-view-panel="hall" aria-label="Concert Hall view">
+      <div class="hall-scene">
+        <div class="stage-lights" aria-hidden="true"></div>
+        <div class="hall-heading"><p class="eyebrow">Choose a part of the stage</p><h2>Concert Hall</h2><p>Each zone opens a different doorway into music learning.</p></div>
+        <div class="zones hall-zones">
+          <button type="button" class="zone zone-left" data-zone="artistic"><small>Stage left</small><strong>Artistic Processes</strong><span>Creating · Performing · Responding</span></button>
+          <button type="button" class="zone zone-center" data-zone="knowledge"><small>Center stage</small><strong>Musical Knowledge</strong><span>Rhythm · Melody · Form · Expression</span></button>
+          <button type="button" class="zone zone-right" data-zone="repertoire"><small>Stage right</small><strong>Repertoire &amp; Culture</strong><span>Traditions · Context · Global music</span></button>
+          <button type="button" class="zone zone-pit" data-zone="musicianship"><small>Orchestra pit</small><strong>Musicianship</strong><span>Singing · Playing · Moving · Improvising</span></button>
         </div>
       </div>
-      <div id="hall-resources" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </div>
-
-    <!-- Recording Studio View -->
-    <div id="view-studio" class="hidden">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="zone bg-surface-container p-5 rounded-xl" onclick="filterByZone('knowledge')">
-          <div class="text-primary text-xs font-bold">CONTROL ROOM</div>
-          <div class="font-bold mt-1">Musical Knowledge</div>
-          <p class="text-sm text-outline mt-2">Rhythm, melody, form, and expression</p>
-        </div>
-        <div class="zone bg-surface-container p-5 rounded-xl" onclick="filterByZone('artistic')">
-          <div class="text-primary text-xs font-bold">LIVE ROOM</div>
-          <div class="font-bold mt-1">Artistic Processes</div>
-          <p class="text-sm text-outline mt-2">Creating, performing, responding</p>
-        </div>
-        <div class="zone bg-surface-container p-5 rounded-xl" onclick="filterByZone('repertoire')">
-          <div class="text-primary text-xs font-bold">ARCHIVE</div>
-          <div class="font-bold mt-1">Repertoire Vault</div>
-          <p class="text-sm text-outline mt-2">Free scores and recordings</p>
+      <div class="zone-status" data-zone-status></div><div class="resource-grid" data-resource-list></div>
+    </section>
+    <section class="view shell is-hidden" id="studio-view" data-view-panel="studio" aria-label="Recording Studio view">
+      <div class="studio-scene">
+        <div class="studio-heading"><p class="eyebrow">Build a lesson like a track</p><h2>Recording Studio</h2><p>Start with a room, then assemble a Set List.</p></div>
+        <div class="zones studio-zones">
+          <button type="button" class="zone" data-zone="knowledge"><small>Control room</small><strong>Musical Knowledge</strong><span>Shape the musical ingredients</span></button>
+          <button type="button" class="zone live-room" data-zone="artistic"><small>Live room</small><strong>Artistic Processes</strong><span>Create, rehearse, and share</span></button>
+          <button type="button" class="zone" data-zone="repertoire"><small>Archive</small><strong>Repertoire Vault</strong><span>Explore source and culture</span></button>
+          <button type="button" class="zone" data-zone="musicianship"><small>Booth</small><strong>Musicianship</strong><span>Sing, play, move, improvise</span></button>
         </div>
       </div>
-      <div id="studio-resources" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </div>
+      <div class="zone-status" data-zone-status></div><div class="resource-grid" data-resource-list></div>
+    </section>
   </main>
 
-  <!-- Set List Panel -->
-  <div id="setlist-panel" class="fixed top-0 right-0 h-full w-96 bg-surface-container border-l border-white/10 transform translate-x-full transition-transform z-50 flex flex-col">
-    <div class="p-4 border-b border-white/5 flex justify-between items-center">
-      <div>
-        <div class="font-bold">My Set List</div>
-        <div class="text-xs text-outline" id="setlist-summary">0 items</div>
-      </div>
-      <button onclick="toggleSetList()" class="text-outline">✕</button>
+  <aside class="set-list-panel" id="set-list-panel" aria-labelledby="set-list-title" aria-hidden="true">
+    <div class="panel-header">
+      <div><p class="eyebrow">Plan the class</p><h2 id="set-list-title">My Set List</h2></div>
+      <button class="icon-button" id="close-set-list" type="button" aria-label="Close Set List">×</button>
     </div>
-    <div id="setlist-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-    <div class="p-4 border-t border-white/5">
-      <button onclick="emailSetList()" class="w-full bg-primary text-black font-bold py-3 rounded-xl">Email My Set List</button>
-      <button onclick="clearSetList()" class="w-full mt-2 text-sm text-outline">Clear All</button>
+    <p class="panel-summary" id="set-list-summary">No lessons saved yet.</p>
+    <div class="set-list-items" id="set-list-items"></div>
+    <div class="panel-actions">
+      <button class="primary-action" id="print-set-list" type="button">Print / save PDF</button>
+      <button class="secondary-action" id="email-set-list" type="button">Email Set List</button>
+      <button class="text-action" id="clear-set-list" type="button">Clear all</button>
     </div>
-  </div>
+  </aside>
+  <button class="panel-scrim" id="panel-scrim" type="button" aria-label="Close Set List" tabindex="-1"></button>
 
-  <script>
-    const resources = [
-      { id: 1, title: "Exploring Steady Beat with Percussion Instruments", source: "Carnegie Hall Toolbox", grade: "K–2", tags: ["rhythm","hands","k2"], zone: "musicianship", desc: "Students explore steady beat and instruments of the percussion family.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Grades-K-2" },
-      { id: 2, title: "Exploring Long and Short Rhythmic Patterns", source: "Carnegie Hall Toolbox", grade: "K", tags: ["rhythm","k2"], zone: "knowledge", desc: "Create movements to represent long and short rhythmic patterns and compose using non-traditional notation.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Grades-K-2" },
-      { id: 3, title: "Performing and Composing Four-Beat Patterns", source: "Carnegie Hall Toolbox", grade: "1", tags: ["rhythm","k2"], zone: "knowledge", desc: "Students read, perform, and compose four-beat rhythmic patterns.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Grades-K-2" },
-      { id: 4, title: "Bought Me a Cat", source: "Kodály Center", grade: "K–2", tags: ["melody","cultural","k2"], zone: "repertoire", desc: "Cumulative folk song with game directions and Library of Congress field recording.", url: "https://kodalycollection.org/" },
-      { id: 5, title: "Syncopation & Step-Clap Body Rhythms", source: "Smithsonian Folkways", grade: "3–5", tags: ["rhythm","hands","cultural","35"], zone: "artistic", desc: "West African and Gullah heritage polyrhythm, movement, and call-and-response.", url: "https://folkways.si.edu/lesson-plans" },
-      { id: 6, title: "Composing a Melody (Name Melody)", source: "Carnegie Hall Toolbox", grade: "4", tags: ["melody","35"], zone: "knowledge", desc: "Students compose and notate short melodies using their names.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Grades-3-5" },
-      { id: 7, title: "Little Sally Walker", source: "MakingMusicFun.net", grade: "K–2", tags: ["rhythm","hands","k2"], zone: "musicianship", desc: "Classic circle game for steady beat, movement, and singing.", url: "https://www.makingmusicfun.net/htm/steady-beat" },
-      { id: 8, title: "Classroom Thunderstorm", source: "Carnegie Hall Toolbox", grade: "2", tags: ["expression","hands","k2"], zone: "artistic", desc: "Class composition exploring crescendo, decrescendo, and tempo changes.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Articulation" },
-      { id: 9, title: "Moving Melodies", source: "Carnegie Hall Toolbox", grade: "K", tags: ["melody","k2"], zone: "knowledge", desc: "Students sing and identify melodic contours through movement.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Pitch" },
-      { id: 10, title: "Goldilocks Sings", source: "Carnegie Hall Toolbox", grade: "3", tags: ["melody","hands","35"], zone: "musicianship", desc: "Explore healthy posture and singing through storytelling.", url: "https://www.carnegiehall.org/Education/Programs/Music-Educators-Toolbox/Grades-3-5" },
-      { id: 11, title: "All the Pretty Little Horses", source: "Kodály Center / Folkways", grade: "K–2", tags: ["melody","cultural","k2"], zone: "repertoire", desc: "Lullaby with multiple versions suitable for singing and listening.", url: "https://kodalycollection.org/" },
-      { id: 12, title: "Musical Explorers Global Songs", source: "Carnegie Hall", grade: "K–2", tags: ["cultural","melody","k2"], zone: "repertoire", desc: "Songs from around the world with singing, movement, and cultural context.", url: "https://www.carnegiehall.org/Education/Programs/Musical-Explorers" }
-    ];
+  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="detail-title">
+    <button class="icon-button dialog-close" id="close-detail" type="button" aria-label="Close lesson details">×</button>
+    <div id="detail-content"></div>
+  </dialog>
 
-    let setList = [];
-    let activeFilters = new Set();
-    let currentView = 'cards';
-    let currentZone = null;
+  <template id="resource-card-template">
+    <article class="resource-card">
+      <div class="card-topline"><span class="grade-pill"></span><span class="source-name"></span></div>
+      <h2></h2><p class="card-description"></p><ul class="tag-list" aria-label="Topics"></ul>
+      <div class="card-actions"><button class="primary-action details-button" type="button">View lesson</button><button class="save-button" type="button"></button></div>
+    </article>
+  </template>
 
-    function getFiltered() {
-      const q = (document.getElementById('search')?.value || '').toLowerCase();
-      return resources.filter(r => {
-        if (currentZone && r.zone !== currentZone) return false;
-        if (q && !r.title.toLowerCase().includes(q) && !r.desc.toLowerCase().includes(q) && !r.source.toLowerCase().includes(q)) return false;
-        if (activeFilters.size === 0) return true;
-        return [...activeFilters].some(f => r.tags.includes(f) || (f === 'k2' && /K|1|2/.test(r.grade)) || (f === '35' && /3|4|5/.test(r.grade)));
-      });
-    }
-
-    function renderCards(containerId, list) {
-      const el = document.getElementById(containerId);
-      if (!el) return;
-      el.innerHTML = list.map(r => `
-        <div class="card bg-surface-container rounded-xl p-4 border border-white/5">
-          <div class="flex justify-between items-start mb-2">
-            <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">${r.grade}</span>
-            <span class="text-xs text-outline">${r.source}</span>
-          </div>
-          <div class="font-bold mb-1">${r.title}</div>
-          <p class="text-sm text-outline mb-3">${r.desc}</p>
-          <div class="flex gap-2">
-            <button onclick="addToSetList(${r.id})" class="text-sm bg-primary text-black px-3 py-1.5 rounded-lg font-semibold">Add to Set List</button>
-            <a href="${r.url}" target="_blank" class="text-sm px-3 py-1.5 rounded-lg border border-white/10 text-outline hover:text-on-surface">Source</a>
-          </div>
-        </div>
-      `).join('') || '<div class="col-span-full text-outline text-sm">No resources match the current filters.</div>';
-    }
-
-    function updateViews() {
-      const filtered = getFiltered();
-      renderCards('view-cards', filtered);
-      renderCards('hall-resources', filtered);
-      renderCards('studio-resources', filtered);
-    }
-
-    function setView(view) {
-      currentView = view;
-      currentZone = null;
-      document.getElementById('view-cards').classList.toggle('hidden', view !== 'cards');
-      document.getElementById('view-hall').classList.toggle('hidden', view !== 'hall');
-      document.getElementById('view-studio').classList.toggle('hidden', view !== 'studio');
-      ['cards','hall','studio'].forEach(v => {
-        const btn = document.getElementById('btn-'+v);
-        btn.className = v === view 
-          ? 'px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-black'
-          : 'px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface';
-      });
-      updateViews();
-    }
-
-    function filterByZone(zone) {
-      currentZone = currentZone === zone ? null : zone;
-      updateViews();
-    }
-
-    function toggleFilter(f) {
-      if (activeFilters.has(f)) activeFilters.delete(f);
-      else activeFilters.add(f);
-      const btn = document.querySelector(`[data-filter="${f}"]`);
-      btn.classList.toggle('bg-primary', activeFilters.has(f));
-      btn.classList.toggle('text-black', activeFilters.has(f));
-      updateViews();
-    }
-
-    function addToSetList(id) {
-      const item = resources.find(r => r.id === id);
-      if (item && !setList.find(s => s.id === id)) {
-        setList.push(item);
-        updateSetList();
-      }
-    }
-
-    function updateSetList() {
-      document.getElementById('setlist-count').textContent = setList.length;
-      document.getElementById('setlist-summary').textContent = `${setList.length} items`;
-      document.getElementById('setlist-items').innerHTML = setList.map(r => `
-        <div class="bg-surface p-3 rounded-lg flex justify-between items-start">
-          <div>
-            <div class="font-semibold text-sm">${r.title}</div>
-            <div class="text-xs text-outline">${r.source} · ${r.grade}</div>
-          </div>
-          <button onclick="removeFromSetList(${r.id})" class="text-outline text-xs">✕</button>
-        </div>
-      `).join('') || '<div class="text-outline text-sm">No items yet</div>';
-    }
-
-    function removeFromSetList(id) {
-      setList = setList.filter(r => r.id !== id);
-      updateSetList();
-    }
-
-    function clearSetList() {
-      setList = [];
-      updateSetList();
-    }
-
-    function toggleSetList() {
-      document.getElementById('setlist-panel').classList.toggle('translate-x-full');
-    }
-
-    function emailSetList() {
-      if (!setList.length) return alert('Set List is empty');
-      const body = setList.map(r => `• ${r.title}\n  ${r.source} · ${r.grade}\n  ${r.desc}\n  ${r.url}\n`).join('\n');
-      const mailto = `mailto:?subject=Stage Ready Set List&body=${encodeURIComponent('My Set List from Stage Ready:\n\n' + body)}`;
-      window.open(mailto);
-    }
-
-    setView('cards');
-  </script>
+  <footer><div class="shell footer-row"><div><strong>Stage Ready</strong><p>Curated starting points for elementary music teachers.</p></div><p>Always review source materials and adapt them for your students.</p></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

@@ -1,62 +1,55 @@
 # Stage Ready — Elementary Music Resource Guide
 
-Interactive browser for free, research-backed elementary music education resources. Designed for classroom teachers.
+A searchable, classroom-ready guide to free elementary music lessons from trusted educational and cultural organizations.
 
-**Live prototype:** open `index.html` in any modern browser (no build step).
+## What it does
 
-## Views
-- **Cards** — grid of lesson cards
-- **Concert Hall** — spatial stage with clickable zones
-- **Recording Studio** — control room / live room / archive metaphor
+- Browse 19 curated resources in Cards, Concert Hall, or Recording Studio views.
+- Filter by grade band and musical focus, or search lesson text, materials, and standards.
+- Open a lesson detail view with time, materials, standards alignment, teacher notes, and a direct source link.
+- Save lessons to a Set List that persists in the browser.
+- Print the Set List, save it as a PDF, or start an email with source links.
+- Use the full interface on desktop, tablet, or mobile with keyboard-accessible controls.
 
-## Core Features
-- Filters: Grade K–2 / 3–5, Rhythm, Melody, Hands-on, Cultural
-- Search across title, description, and source
-- Spatial zones filter the resource list
-- Set List (add / remove / clear) + “Email My Set List” (mailto with links)
-- Direct source links on every card
+Resource records live in `resources.json`; the interface and behavior live in `index.html`, `styles.css`, and `app.js`.
 
-## Free Resources Included (sample set)
-- Carnegie Hall Music Educators Toolbox (K–2 and 3–5 lessons)
-- Smithsonian Folkways lesson plans
-- Kodály Center American Folk Song Collection
-- MakingMusicFun.net
-- Carnegie Hall Musical Explorers
+## Run locally
 
-## Ontology Zones
-- Artistic Processes (Creating, Performing, Responding, Connecting)
-- Musical Knowledge (Rhythm/Meter, Melody, Form, Expression)
-- Musicianship (Singing, Playing, Moving, Improvising…)
-- Repertoire & Culture
+Because resources are loaded from JSON, serve the folder rather than opening the HTML as a `file://` URL:
 
-## MANDATORY: Image Assets via Stitch MCP
+```sh
+python3 -m http.server 8000
+```
 
-Any new or improved visual assets (stage backgrounds, studio interiors, zone illustrations, icons, atmospheric lighting, etc.) **must be generated using the Google Stitch MCP** connected in Claude Code or Codex.
+Then open `http://localhost:8000`.
 
-**Stitch project references (use these as starting points / style guides):**
+## Test
+
+```sh
+npm install
+npx playwright install chromium
+npm test
+```
+
+The smoke suite covers filtering, Set List persistence behavior, lesson details, and view switching at desktop and mobile sizes.
+
+## Add a resource
+
+Add one object to `resources.json`. Keep the source URL direct where the publisher provides a stable lesson page, describe rather than reproduce source material, and verify grade, materials, and standards against the original source.
+
+## Visual asset policy
+
+Any future image assets (stage backgrounds, studio interiors, illustrations, icons, or atmospheric artwork) must be generated with the Google Stitch MCP and saved locally under `assets/`. The current environments are CSS-only and do not use stock imagery.
+
+Stitch project references:
+
 - https://stitch.withgoogle.com/projects/11091067758089258234?node-id=da45338a34f441bab659057e7752a89b
 - https://stitch.withgoogle.com/projects/11091067758089258234?node-id=634dd87f3e79475b9310f019c9821f45
 
-### Required workflow for images
-1. Connect / confirm Stitch MCP is available in the coding agent.
-2. Prompt Stitch to generate assets that match the dark, warm-gold concert-hall / studio aesthetic already established.
-3. Export or download the generated images and place them in an `/assets` folder.
-4. Update the HTML background URLs and any zone imagery to use the local assets.
-5. Do **not** rely solely on external Unsplash or random stock images for the final version.
-
-## Build-Out Tasks for Codex / Claude Code
-1. Expand the `resources` array with more free lessons from the sources above (include direct URLs).
-2. Add a lesson detail modal (standards alignment, materials, full description, source link).
-3. Persist the Set List in `localStorage`.
-4. Improve Hall and Studio visuals using **Stitch-generated** image assets (mandate above).
-5. Strengthen search and add keyboard accessibility.
-6. Add a simple printable / PDF export of the Set List.
-7. Move resources to an external `resources.json` for easier editing.
-8. Optimize for mobile.
-9. Deploy to GitHub Pages, Vercel, or Netlify.
-
 ## Deployment
-Single static HTML file (plus any `/assets` you add). Deploy anywhere that serves static files.
 
-## License
-Free educational use. Always attribute original sources and verify current rights for any linked materials.
+The project is a static site with no build step and can be deployed directly to Vercel, GitHub Pages, or Netlify.
+
+## Source and rights note
+
+Stage Ready links to original publishers and does not republish their lesson content. Review the current source terms and classroom suitability before use, and preserve source attribution.

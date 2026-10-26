@@ -1,0 +1,15 @@
+{
+  "name": "stage-ready-music-resources",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve:test": "http-server . -a 127.0.0.1 -p 4180 -c-1",
+    "playwright:test": "playwright test",
+    "test": "start-server-and-test serve:test http://127.0.0.1:4180 playwright:test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "http-server": "^14.1.1",
+    "start-server-and-test": "^2.1.2"
+  }
+}
