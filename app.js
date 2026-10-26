@@ -56,6 +56,11 @@ function bindEvents() {
   document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
   document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => toggleFilter(button.dataset.filter)));
   document.querySelectorAll("[data-zone]").forEach(button => button.addEventListener("click", () => toggleZone(button.dataset.zone)));
+  document.querySelectorAll("[data-exit-immersive]").forEach(button => button.addEventListener("click", () => setView("cards")));
+  document.querySelectorAll("[data-immersive-scene]").forEach(scene => {
+    scene.addEventListener("pointermove", event => moveSceneLight(scene, event));
+    scene.addEventListener("pointerleave", () => resetSceneLight(scene));
+  });
   els.search.addEventListener("input", event => { state.query = event.target.value.trim().toLocaleLowerCase(); renderResources(); });
   document.querySelector("#clear-filters").addEventListener("click", clearFilters);
   document.querySelector("#filter-toggle").addEventListener("click", toggleMobileFilters);
@@ -103,6 +108,17 @@ function renderResources() {
   const visibleList = document.querySelector(`[data-view-panel="${state.view}"] [data-resource-list]`);
   document.querySelectorAll("[data-resource-list]").forEach(list => { list.replaceChildren(); });
 
+  document.querySelectorAll("[data-immersive-results]").forEach(panel => {
+    const activePanel = panel.closest("[data-view-panel]")?.dataset.viewPanel === state.view;
+    panel.classList.toggle("is-hidden", !activePanel || !state.zone);
+  });
+
+  if (state.view !== "cards" && !state.zone) {
+    els.resultSummary.textContent = `${state.resources.length} resources · choose a space`;
+    renderZoneStatus();
+    return;
+  }
+
   if (!filtered.length) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
@@ -147,6 +163,7 @@ function setSaveButtonState(button, id) {
 function setView(view) {
   state.view = view;
   state.zone = null;
+  document.querySelector(".intro").classList.toggle("is-hidden", view !== "cards");
   document.querySelectorAll("[data-view-panel]").forEach(panel => panel.classList.toggle("is-hidden", panel.dataset.viewPanel !== view));
   document.querySelectorAll("[data-view]").forEach(button => {
     const active = button.dataset.view === view;
@@ -154,6 +171,7 @@ function setView(view) {
     button.setAttribute("aria-pressed", String(active));
   });
   document.querySelectorAll("[data-zone]").forEach(button => button.classList.remove("is-active"));
+  document.querySelectorAll("[data-zone]").forEach(button => button.setAttribute("aria-pressed", "false"));
   renderResources();
 }
 
@@ -170,28 +188,31 @@ function clearFilters() {
   els.search.value = "";
   document.querySelectorAll("[data-filter]").forEach(button => button.setAttribute("aria-pressed", "false"));
   document.querySelectorAll("[data-zone]").forEach(button => button.classList.remove("is-active"));
+  document.querySelectorAll("[data-zone]").forEach(button => button.setAttribute("aria-pressed", "false"));
   renderResources();
 }
 
 function toggleZone(zone) {
   state.zone = state.zone === zone ? null : zone;
-  document.querySelectorAll("[data-zone]").forEach(button => button.classList.toggle("is-active", button.dataset.zone === state.zone));
+  document.querySelectorAll("[data-zone]").forEach(button => {
+    const active = button.dataset.zone === state.zone;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
   renderResources();
-  document.querySelector(`[data-view-panel="${state.view}"] [data-zone-status]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function renderZoneStatus() {
   document.querySelectorAll("[data-zone-status]").forEach(container => {
     container.replaceChildren();
     if (!state.zone) {
-      container.textContent = "Choose a zone above, or browse every resource.";
       return;
     }
     const label = document.createElement("span");
     label.textContent = `Showing ${ZONE_LABELS[state.zone]}`;
     const clear = document.createElement("button");
     clear.type = "button";
-    clear.textContent = "Show all ×";
+    clear.textContent = state.view === "hall" ? "Return to full stage ×" : "Return to full studio ×";
     clear.addEventListener("click", () => toggleZone(state.zone));
     container.append(label, clear);
   });
@@ -317,6 +338,24 @@ function handleKeyboardShortcuts(event) {
     els.search.focus();
   }
   if (event.key === "Escape" && els.setListPanel.classList.contains("is-open")) closeSetList();
+}
+
+function moveSceneLight(scene, event) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const bounds = scene.getBoundingClientRect();
+  const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+  const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+  scene.style.setProperty("--light-x", `${x}%`);
+  scene.style.setProperty("--light-y", `${y}%`);
+  scene.style.setProperty("--shift-x", `${(x - 50) * -0.015}px`);
+  scene.style.setProperty("--shift-y", `${(y - 50) * -0.01}px`);
+}
+
+function resetSceneLight(scene) {
+  scene.style.removeProperty("--light-x");
+  scene.style.removeProperty("--light-y");
+  scene.style.removeProperty("--shift-x");
+  scene.style.removeProperty("--shift-y");
 }
 
 function getResource(id) {

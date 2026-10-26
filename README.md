@@ -39,7 +39,7 @@ Add one object to `resources.json`. Keep the source URL direct where the publish
 
 ## Visual asset policy
 
-Any future image assets (stage backgrounds, studio interiors, illustrations, icons, or atmospheric artwork) must be generated with the Google Stitch MCP and saved locally under `assets/`. The current environments are CSS-only and do not use stock imagery.
+Use the connected Stitch project for interaction design, spatial layout, and visual-system continuity. Store all final assets locally under `assets/`; do not depend on stock-photo URLs. The immersive hall and studio use generated environment plates with semantic interaction layered in HTML/CSS/JavaScript. Their prompts and design provenance are documented in `assets/immersive/README.md`.
 
 Stitch project references:
 

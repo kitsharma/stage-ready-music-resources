@@ -22,5 +22,16 @@ test("filters, saves, opens details, and changes view", async ({ page }) => {
 
   await page.locator("button[data-view=hall]").click();
   await expect(page.locator("#hall-view")).toBeVisible();
+  await expect(page.locator("#hall-view [data-immersive-results]")).toBeHidden();
+  await page.locator("#hall-view [data-zone=knowledge]").click();
+  await expect(page.locator("#hall-view [data-immersive-results]")).toBeVisible();
+  await expect(page.locator("#hall-view .resource-card").first()).toBeVisible();
+  await page.locator("#hall-view [data-exit-immersive]").click();
+  await expect(page.locator("#cards-view")).toBeVisible();
+
+  await page.locator("button[data-view=studio]").click();
+  await expect(page.locator("#studio-view")).toBeVisible();
+  await page.locator("#studio-view [data-zone=artistic]").click();
+  await expect(page.locator("#studio-view [data-immersive-results]")).toBeVisible();
   expect(pageErrors).toEqual([]);
 });

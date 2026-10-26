@@ -23,7 +23,7 @@
       <nav class="view-switcher" aria-label="Choose a view">
         <button class="view-button is-active" type="button" data-view="cards" aria-pressed="true">Cards</button>
         <button class="view-button" type="button" data-view="hall" aria-pressed="false">Concert Hall</button>
-        <button class="view-button" type="button" data-view="studio" aria-pressed="false">Studio</button>
+        <button class="view-button" type="button" data-view="studio" aria-pressed="false">Recording Studio</button>
       </nav>
       <button class="set-list-button" id="open-set-list" type="button" aria-controls="set-list-panel" aria-expanded="false">
         <span aria-hidden="true">♫</span> Set List <span class="count" id="set-list-count">0</span>
@@ -64,29 +64,52 @@
       <div class="resource-grid" data-resource-list></div>
     </section>
     <section class="view shell is-hidden" id="hall-view" data-view-panel="hall" aria-label="Concert Hall view">
-      <div class="hall-scene">
-        <div class="stage-lights" aria-hidden="true"></div>
-        <div class="hall-heading"><p class="eyebrow">Choose a part of the stage</p><h2>Concert Hall</h2><p>Each zone opens a different doorway into music learning.</p></div>
-        <div class="zones hall-zones">
-          <button type="button" class="zone zone-left" data-zone="artistic"><small>Stage left</small><strong>Artistic Processes</strong><span>Creating · Performing · Responding</span></button>
-          <button type="button" class="zone zone-center" data-zone="knowledge"><small>Center stage</small><strong>Musical Knowledge</strong><span>Rhythm · Melody · Form · Expression</span></button>
-          <button type="button" class="zone zone-right" data-zone="repertoire"><small>Stage right</small><strong>Repertoire &amp; Culture</strong><span>Traditions · Context · Global music</span></button>
-          <button type="button" class="zone zone-pit" data-zone="musicianship"><small>Orchestra pit</small><strong>Musicianship</strong><span>Singing · Playing · Moving · Improvising</span></button>
-        </div>
+      <div class="immersive-scene concert-environment" data-immersive-scene="hall">
+        <div class="scene-shade" aria-hidden="true"></div>
+        <div class="scene-title"><span>Audience view</span><strong>Concert Hall</strong></div>
+        <button class="exit-immersive" type="button" data-exit-immersive>Exit immersive view</button>
+        <button type="button" class="spatial-zone hall-artistic" data-zone="artistic">
+          <span class="spatial-label"><small>Stage left wing</small><strong>Artistic Processes</strong><em>Creating · Performing · Responding · Connecting</em></span>
+        </button>
+        <button type="button" class="spatial-zone hall-knowledge" data-zone="knowledge">
+          <span class="spatial-label"><small>Center risers</small><strong>Musical Knowledge</strong><em>Rhythm · Melody · Form · Expression</em></span>
+        </button>
+        <button type="button" class="spatial-zone hall-repertoire" data-zone="repertoire">
+          <span class="spatial-label"><small>Stage right wing</small><strong>Repertoire &amp; Culture</strong><em>Traditions · Context · Global music</em></span>
+        </button>
+        <button type="button" class="spatial-zone hall-musicianship" data-zone="musicianship">
+          <span class="spatial-label"><small>Orchestra pit</small><strong>Musicianship</strong><em>Singing · Playing · Moving · Improvising</em></span>
+        </button>
+        <p class="scene-instruction">Choose a place on stage</p>
       </div>
-      <div class="zone-status" data-zone-status></div><div class="resource-grid" data-resource-list></div>
+      <div class="immersive-results is-hidden" data-immersive-results>
+        <div class="zone-status" data-zone-status></div>
+        <div class="resource-grid" data-resource-list></div>
+      </div>
     </section>
     <section class="view shell is-hidden" id="studio-view" data-view-panel="studio" aria-label="Recording Studio view">
-      <div class="studio-scene">
-        <div class="studio-heading"><p class="eyebrow">Build a lesson like a track</p><h2>Recording Studio</h2><p>Start with a room, then assemble a Set List.</p></div>
-        <div class="zones studio-zones">
-          <button type="button" class="zone" data-zone="knowledge"><small>Control room</small><strong>Musical Knowledge</strong><span>Shape the musical ingredients</span></button>
-          <button type="button" class="zone live-room" data-zone="artistic"><small>Live room</small><strong>Artistic Processes</strong><span>Create, rehearse, and share</span></button>
-          <button type="button" class="zone" data-zone="repertoire"><small>Archive</small><strong>Repertoire Vault</strong><span>Explore source and culture</span></button>
-          <button type="button" class="zone" data-zone="musicianship"><small>Booth</small><strong>Musicianship</strong><span>Sing, play, move, improvise</span></button>
-        </div>
+      <div class="immersive-scene studio-environment" data-immersive-scene="studio">
+        <div class="scene-shade" aria-hidden="true"></div>
+        <div class="scene-title"><span>Control-room view</span><strong>Recording Studio</strong></div>
+        <button class="exit-immersive" type="button" data-exit-immersive>Exit immersive view</button>
+        <button type="button" class="spatial-zone studio-booth" data-zone="musicianship">
+          <span class="spatial-label"><small>Vocal booth</small><strong>Musicianship</strong><em>Singing · Playing · Moving · Improvising</em></span>
+        </button>
+        <button type="button" class="spatial-zone studio-live" data-zone="artistic">
+          <span class="spatial-label"><small>Live room</small><strong>Artistic Processes</strong><em>Create · Rehearse · Perform · Respond</em></span>
+        </button>
+        <button type="button" class="spatial-zone studio-archive" data-zone="repertoire">
+          <span class="spatial-label"><small>Archive &amp; tape vault</small><strong>Repertoire &amp; Culture</strong><em>Sources · Traditions · Global music</em></span>
+        </button>
+        <button type="button" class="spatial-zone studio-control" data-zone="knowledge">
+          <span class="spatial-label"><small>Control room</small><strong>Musical Knowledge</strong><em>Rhythm · Melody · Form · Expression</em></span>
+        </button>
+        <p class="scene-instruction">Choose a room</p>
       </div>
-      <div class="zone-status" data-zone-status></div><div class="resource-grid" data-resource-list></div>
+      <div class="immersive-results is-hidden" data-immersive-results>
+        <div class="zone-status" data-zone-status></div>
+        <div class="resource-grid" data-resource-list></div>
+      </div>
     </section>
   </main>
 
