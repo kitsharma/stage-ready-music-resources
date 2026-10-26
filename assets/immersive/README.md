@@ -19,3 +19,7 @@ Wide 16:9 architectural photograph of an empty concert hall stage from the cente
 ### Recording Studio
 
 Wide 16:9 architectural photograph from a warm professional control room: low walnut desk without controls, large acoustic-glass window into a live room with piano and classroom instruments, separate glass vocal booth on the left, open tape/archive alcove on the right, walnut acoustic panels, amber practical lighting, and restrained teal accents. No people, text, screens, cards, faders, controls, logos, or watermarks.
+
+### Recording Studio v2 — contemporary edit
+
+Preserve the original camera position, four-room architecture, glass divisions, warm amber/teal lighting, and drum kit. Transform the live room into a contemporary band-recording setup with electric guitar, electric bass, amplifiers, a modern keyboard, boom microphone stands, and instrument cables. Replace the foreground desk with a substantial modern mixing console, nearfield monitors, and one dark inactive display. Convert the right archive into a working equipment and tape vault with rack gear and road cases. Avoid a classical recital-room or domestic-library character. No people, interface text, labels, logos, or watermarks.
